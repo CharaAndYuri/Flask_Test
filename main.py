@@ -8,7 +8,7 @@ from forms.form import GravitationForm
 from models import *
 
 users = []
-
+#hello world
 
 def generate_users(n: int):
     for i in range(n):
