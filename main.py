@@ -13,17 +13,17 @@ users = []
 def generate_users(n: int):
     for i in range(n):
         age = randint(1, 100)
-        user = User(i, "test@example.com", "test", age, f"city{i}", "12345")
+        user = User(i, "test@example.com", "test", "test surname", age, f"city{i}", "12345")
         users.append(user)
 
 
-def addUser(email, name, age, city, password):
+def addUser(email, name, surname, age, city, password):
     if len(users) == 0:
         last_id = 0
     else:
         last_id = max(users, key=lambda x: x.id).id + 1
 
-    user = User(last_id, email, name, age, city, password)
+    user = User(last_id, email, name, surname, age, city, password)
     users.append(user)
 
 
@@ -55,6 +55,7 @@ def signUp():
     if form.validate_on_submit():
         email = form.email.data
         name = form.name.data
+        surname = form.surname.data
         age = form.age.data
         city = form.city.data
         password = form.password.data
@@ -68,7 +69,7 @@ def signUp():
                 error="Пароли не совпадают!"
             )
 
-        addUser(email, name, age, city, password)
+        addUser(email, name, surname, age, city, password)
         return redirect("/users")
 
     return render_template("formTemplate.html", form=form, btn_name="Регистрация!")

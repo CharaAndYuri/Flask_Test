@@ -10,6 +10,7 @@ from wtforms.validators import DataRequired, Email
 class SignUpForm(FlaskForm):
     email = EmailField('Электронная почта', validators=[DataRequired(), Email()])
     name = StringField('Имя', validators=[DataRequired()])
+    surname = StringField('Фамилия')
     age = IntegerField('Возраст', default=18)
     city = StringField('Город', validators=[DataRequired()])
     gender = SelectField('Пол', choices=[("М", "Мужской"), ("Ж", "Женский")])
