@@ -1,14 +1,12 @@
 from dataclasses import dataclass, asdict
+from datetime import datetime
 
 
 @dataclass
-class User:
+class Video:
     id: int | None
-    email: str
+    user_id: int
     name: str
-    age: int
-    city: str
-    password: str
-
+    filename: str
     def __dict__(self):
         return asdict(self)
