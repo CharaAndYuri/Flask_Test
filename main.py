@@ -3,8 +3,10 @@ from random import randint
 from flask import Flask, render_template, redirect
 
 import repositories
+from forms.Add_VideoForm import Add_VideoForm
 from forms.SignUpForm import SignUpForm
 from models import *
+from repositories import add_video
 
 from utils import Link
 
@@ -22,18 +24,15 @@ def generate_users(n: int):
         )
         repositories.add_user(user)
 
-
 def addUser(email, name, age, city, password):
     user = User(None, email, name, age, city, password)
     repositories.add_user(user)
 
+def addVideo(name, filename):
+    video = Video(None, name, filename)
+    repositories.add_video(video)
 
 app = Flask(__name__)
-
-
-@app.route('/tiktok')
-def tiktok():
-    return render_template("test.html")
 
 
 @app.route('/')
@@ -43,7 +42,8 @@ def index():
         'layout/layout.html',
         links=[
             Link("Home", "/"),
-            Link("Add User", "/add")
+            Link("Add User", "/add"),
+            Link("Add Video", "/addVideo")
         ],
         users=users
     )
@@ -74,6 +74,31 @@ def signUp():
 
     return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
 
+@app.route("/addVideo", methods=['GET', 'POST'])
+def Add_Video():
+    form = Add_VideoForm()
+
+    if form.validate_on_submit():
+        name = form.name.data
+        filename = form.filename.data
+        file = form.file.data
+
+
+
+
+        addVideo(name, filename)
+        return redirect("/videos")
+
+    return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
+
+@app.route("/videos", methods=['GET', 'POST'])
+def getVideos():
+    videos = repositories.get_videos()
+    return render_template(
+        "videos/list_videos.html",
+        videos=videos,
+        count=len(videos)
+    )
 
 @app.route("/users", methods=['GET', 'POST'])
 def getUsers():
@@ -114,6 +139,34 @@ def delUser(user_id: int):
 
     return redirect("/")
 
+@app.route("/videos/<int:video_id>")
+def getVideo(video_id: int):
+    videos = repositories.get_videos()
+
+    for video in videos:
+        if video.id == video_id:
+            return render_template(
+                "layout/video-layout.html",
+                links=[
+                    Link("Home", "/"),
+                    Link("Add Video", "/addVideo"),
+                    Link("Delete User", f"/deVideo/{video.id}", class_name="bg-danger"),
+                ],
+                video = video
+            )
+
+    return redirect("/")
+
+
+@app.route("/delVideo/<int:video_id>")
+def delVideo(video_id: int):
+    videos = repositories.get_videos()
+
+    for video in videos:
+        if video.id == video_id:
+            repositories.delete_video(video)
+
+    return redirect("/")
 
 if __name__ == '__main__':
     app.app_context().push()

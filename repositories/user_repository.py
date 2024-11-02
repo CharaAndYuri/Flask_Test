@@ -30,3 +30,7 @@ def get_users():
     rows = db.execute("SELECT * FROM Users").fetchall()
     return list(map(lambda row: models.User(*row), rows))
 
+def delete_user(user: models.User):
+    db = database.get_db()
+    db.execute("DELETE FROM Users WHERE id = ?", (user.id,))
+    db.commit()

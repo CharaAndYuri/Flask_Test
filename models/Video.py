@@ -8,5 +8,6 @@ class Video:
     user_id: int
     name: str
     filename: str
+
     def __dict__(self):
         return asdict(self)
