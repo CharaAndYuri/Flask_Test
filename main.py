@@ -1,3 +1,4 @@
+from fileinput import filename
 from random import randint
 
 from flask import Flask, render_template, redirect
@@ -24,15 +25,23 @@ def generate_users(n: int):
         )
         repositories.add_user(user)
 
+
 def addUser(email, name, age, city, password):
     user = User(None, email, name, age, city, password)
     repositories.add_user(user)
 
-def addVideo(name, filename):
-    video = Video(None, name, filename)
+
+def Add_video(name):
+    video = Video(None, name)
     repositories.add_video(video)
 
+
 app = Flask(__name__)
+
+
+def save_video(name, file):
+    video = Video(None, name, file)
+    file.save(name)
 
 
 @app.route('/')
@@ -74,22 +83,20 @@ def signUp():
 
     return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
 
+
 @app.route("/addVideo", methods=['GET', 'POST'])
 def Add_Video():
     form = Add_VideoForm()
 
     if form.validate_on_submit():
         name = form.name.data
-        filename = form.filename.data
         file = form.file.data
 
-
-
-
-        addVideo(name, filename)
+        add_video(Video(name=name, user_id=None, id=None))
         return redirect("/videos")
 
     return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
+
 
 @app.route("/videos", methods=['GET', 'POST'])
 def getVideos():
@@ -99,6 +106,7 @@ def getVideos():
         videos=videos,
         count=len(videos)
     )
+
 
 @app.route("/users", methods=['GET', 'POST'])
 def getUsers():
@@ -139,6 +147,7 @@ def delUser(user_id: int):
 
     return redirect("/")
 
+
 @app.route("/videos/<int:video_id>")
 def getVideo(video_id: int):
     videos = repositories.get_videos()
@@ -152,7 +161,7 @@ def getVideo(video_id: int):
                     Link("Add Video", "/addVideo"),
                     Link("Delete User", f"/deVideo/{video.id}", class_name="bg-danger"),
                 ],
-                video = video
+                video=video
             )
 
     return redirect("/")
@@ -168,9 +177,11 @@ def delVideo(video_id: int):
 
     return redirect("/")
 
+
 if __name__ == '__main__':
     app.app_context().push()
     repositories.create_table()
+    repositories.create_table_for_video()
 
     # generate_users(10)
     app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'

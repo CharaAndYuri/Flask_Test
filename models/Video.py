@@ -7,7 +7,7 @@ class Video:
     id: int | None
     user_id: int
     name: str
-    filename: str
+
 
     def __dict__(self):
         return asdict(self)
