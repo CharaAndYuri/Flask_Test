@@ -1,3 +1,4 @@
+import os
 from fileinput import filename
 from random import randint
 
@@ -51,6 +52,7 @@ def index():
         'layout/layout.html',
         links=[
             Link("Home", "/"),
+            Link("Videos", "/videos"),
             Link("Add User", "/add"),
             Link("Add Video", "/addVideo")
         ],
@@ -92,7 +94,15 @@ def Add_Video():
         name = form.name.data
         file = form.file.data
 
-        add_video(Video(name=name, user_id=None, id=None))
+        from datetime import datetime
+
+        filename = (str(datetime.now())
+                    .replace(" ", "_")
+                    .replace(".", ":")
+                    .replace(":", "-")
+                    + ".mp4")
+        file.save(f"static/{filename}")
+        add_video(Video(name=name, user_id=0, id=None, filename=filename))
         return redirect("/videos")
 
     return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
@@ -159,7 +169,7 @@ def getVideo(video_id: int):
                 links=[
                     Link("Home", "/"),
                     Link("Add Video", "/addVideo"),
-                    Link("Delete User", f"/deVideo/{video.id}", class_name="bg-danger"),
+                    Link("Delete User", f"/delVideo/{video.id}", class_name="bg-danger"),
                 ],
                 video=video
             )
@@ -173,7 +183,7 @@ def delVideo(video_id: int):
 
     for video in videos:
         if video.id == video_id:
-            repositories.delete_video(video)
+            repositories.del_video(video)
 
     return redirect("/")
 

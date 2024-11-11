@@ -9,6 +9,7 @@ def create_table_for_video():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             name TEXT NOT NULL,
+            filename TEXT NOT NULL,
             Foreign key(user_id) references user(id)
         )
     """)
@@ -23,8 +24,8 @@ def select_video(video: models.Video):
 def add_video(video: models.Video):
     db = database.get_db()
     db.execute(
-        "insert into Videos (name) values (?)",
-        (video.name,)
+        "insert into Videos (name, user_id, filename) values (?, ?, ?)",
+        (video.name, video.user_id, video.filename,)
     )
     db.commit()
 
@@ -35,6 +36,7 @@ def get_videos():
     return list(map(lambda row: models.Video(*row), rows))
 
 
-def delete_video(video: models.Video):
+def del_video(video: models.Video):
     db = database.get_db()
-    db.execute("DELETE FROM Users WHERE id = ?", (video.id,))
+    db.execute("DELETE FROM Videos WHERE id = ?", (video.id,))
+    db.commit()
