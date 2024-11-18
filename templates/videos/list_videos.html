@@ -12,7 +12,7 @@
 </head>
 <body>
 <span class="p-2 m-0">{{ count }}</span>
-<a href="/addVideo" type="button" class="btn btn-primary m-2">Добавить видео</a>
+<a href="/addVideo" type="button" class="btn btn-primary m-2">Add video</a>
 <div class="list-group overflow-auto p-2">
     {% for Video in videos %}
     <a href="videos/{{ Video.id }}" class="list-group-item list-group-item-action" aria-current="true">

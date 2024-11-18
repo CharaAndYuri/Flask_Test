@@ -8,11 +8,11 @@ from wtforms.validators import DataRequired, Email
 # pip install email-validator
 
 class SignUpForm(FlaskForm):
-    email = EmailField('Электронная почта', validators=[DataRequired(), Email()])
-    name = StringField('Имя', validators=[DataRequired()])
-    surname = StringField('Фамилия')
-    age = IntegerField('Возраст', default=18)
-    city = StringField('Город', validators=[DataRequired()])
-    gender = SelectField('Пол', choices=[("М", "Мужской"), ("Ж", "Женский")])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    consfirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    name = StringField('Name', validators=[DataRequired()])
+    surname = StringField('Surname')
+    age = IntegerField('Age', default=18)
+    city = StringField('Sity', validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[("M", "Male"), ("F", "Female"), ("A", "Another") ])
+    password = PasswordField('Password', validators=[DataRequired()])
+    consfirm_password = PasswordField('Confirm password', validators=[DataRequired()])

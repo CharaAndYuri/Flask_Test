@@ -9,13 +9,15 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
 
     </script>
-    <title>Видео - {{ video.name }}</title>
+    <title>Video - {{ video.name }}</title>
 </head>
 <body class="d-flex" style="height: 100vh">
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 280px;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <span class="fs-4">VIDEOS</span>
     </a>
+
+
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         {% for link in links %}
@@ -36,6 +38,13 @@
         <div class="card-body">
         <h5 class="card-title"> {{ video.name }}</h5>
     </div>
+    </div>
+    <video width="1500" height="800" controls>
+    <source src="/video-layout/{{ video.filename }}" type="video/mp4">
+</video>
+    <div>
+         <input class="form-control" placeholder="Write comment(Anonimly)" type="text">
+        <button type="submit" class="btn btn-success btn-sm d-grid gap-2 col-6 mx-auto">leave a comment</button>
     </div>
 </main>
 </body>

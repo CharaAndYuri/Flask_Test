@@ -11,7 +11,7 @@
 </head>
 <body>
 <span class="p-2 m-0">{{ count }}</span>
-<a href="/signUp" type="button" class="btn btn-primary m-2">Добавить пользователя</a>
+<a href="/signUp" type="button" class="btn btn-primary m-2">Add User</a>
 <div class="list-group overflow-auto p-2">
     {% for user in users %}
     <a href="users/{{ user.id }}" class="list-group-item list-group-item-action" aria-current="true">

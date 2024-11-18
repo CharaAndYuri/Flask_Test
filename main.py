@@ -1,8 +1,8 @@
 import os
 from fileinput import filename
 from random import randint
-
-from flask import Flask, render_template, redirect
+import static
+from flask import Flask, render_template, redirect, Response
 
 import repositories
 from forms.Add_VideoForm import Add_VideoForm
@@ -32,6 +32,13 @@ def addUser(email, name, age, city, password):
     repositories.add_user(user)
 
 
+def generate_video():  # Чтение видеофайла поблочно
+    with open("path_to_video.mp4", "rb") as video:
+        chunk = video.read(1024)
+        while chunk:
+            yield chunk
+            chunk = video.read(1024)
+
 def Add_video(name):
     video = Video(None, name)
     repositories.add_video(video)
@@ -43,6 +50,19 @@ app = Flask(__name__)
 def save_video(name, file):
     video = Video(None, name, file)
     file.save(name)
+
+def generate_video(filename):  # Чтение видеофайла поблочно
+    with open(f"static/{filename}", "rb") as video:
+        chunk = video.read(1024)
+        while chunk:
+            yield chunk
+            chunk = video.read(1024)
+
+@app.route('/video-layout/<filename>')
+def video_feed(filename):  # Трансляция видео
+    # check file exist
+    return Response(generate_video(filename), mimetype='video/mp4')
+
 
 
 @app.route('/')
@@ -76,14 +96,14 @@ def signUp():
             return render_template(
                 "formTemplate.html",
                 form=form,
-                btn_name="Регистрация!",
-                error="Пароли не совпадают!"
+                btn_name="Sign up!",
+                error="Passwords don't match!"
             )
 
         addUser(email, name, age, city, password)
         return redirect("/users")
 
-    return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
+    return render_template("formTemplate.html", form=form, btn_name="Sign Up!")
 
 
 @app.route("/addVideo", methods=['GET', 'POST'])
@@ -105,7 +125,7 @@ def Add_Video():
         add_video(Video(name=name, user_id=0, id=None, filename=filename))
         return redirect("/videos")
 
-    return render_template("formTemplate.html", form=form, btn_name="Регистрация!")
+    return render_template("formTemplate.html", form=form, btn_name="Sign Up!")
 
 
 @app.route("/videos", methods=['GET', 'POST'])
@@ -116,6 +136,7 @@ def getVideos():
         videos=videos,
         count=len(videos)
     )
+
 
 
 @app.route("/users", methods=['GET', 'POST'])
