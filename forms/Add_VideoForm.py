@@ -8,5 +8,5 @@ from wtforms.validators import DataRequired, Email
 # pip install email-validator
 
 class Add_VideoForm(FlaskForm):
-    name = StringField('Имя', validators=[DataRequired()])
-    file = FileField('Вставьте файл', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    file = FileField('Input file', validators=[DataRequired()])

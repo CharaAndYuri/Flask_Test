@@ -8,7 +8,7 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
 
     </script>
-    <title>Home</title>
+    <title>Title</title>
 </head>
 <body class="d-flex" style="height: 100vh">
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100" style="width: 280px;">
@@ -29,17 +29,9 @@
         {% endfor %}
     </ul>
     <hr>
-    <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
-           data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>mdo</strong>
-        </a>
     </div>
-</div>
 <main class="w-100 h-100 bg-info-subtle">
     <div class="list-group p-2">
-        <video src="/static/video.mov" autoplay></video>
         {% for user in users %}
         <a href="users/{{ user.id }}" class="list-group-item list-group-item-action" aria-current="true">
             <div class="d-flex w-100 justify-content-between">

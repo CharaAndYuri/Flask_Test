@@ -2,15 +2,16 @@ import os
 from fileinput import filename
 from random import randint
 import static
-from flask import Flask, render_template, redirect, Response
-
+from flask import Flask, render_template, redirect, request, Response
+from flask_login import LoginManager, login_required, login_user, logout_user
 import repositories
 from forms.Add_VideoForm import Add_VideoForm
 from forms.SignUpForm import SignUpForm
 from models import *
 from repositories import add_video
-
+from forms.SignInForm import SignInForm
 from utils import Link
+
 
 
 def generate_users(n: int):
@@ -44,8 +45,13 @@ def Add_video(name):
     repositories.add_video(video)
 
 
-app = Flask(__name__)
 
+app = Flask(__name__)
+login_manager = LoginManager()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return repositories.get_user(user_id)
 
 def save_video(name, file):
     video = Video(None, name, file)
@@ -66,6 +72,7 @@ def video_feed(filename):  # Трансляция видео
 
 
 @app.route('/')
+@login_required
 def index():
     users = repositories.get_users()
     return render_template(
@@ -101,7 +108,7 @@ def signUp():
             )
 
         addUser(email, name, age, city, password)
-        return redirect("/users")
+        return redirect("/login")
 
     return render_template("formTemplate.html", form=form, btn_name="Sign Up!")
 
@@ -123,9 +130,9 @@ def Add_Video():
                     + ".mp4")
         file.save(f"static/{filename}")
         add_video(Video(name=name, user_id=0, id=None, filename=filename))
-        return redirect("/videos")
+        return redirect("/")
 
-    return render_template("formTemplate.html", form=form, btn_name="Sign Up!")
+    return render_template("formTemplate.html", form=form, btn_name="Save video!")
 
 
 @app.route("/videos", methods=['GET', 'POST'])
@@ -138,18 +145,29 @@ def getVideos():
     )
 
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = SignInForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        users = repositories.get_users()
+        for user in users:
+            if user.email == email and user.password == password:
+                login_user(user)
+                return redirect("/")
+        return redirect("/login")
+    return render_template("formTemplate.html", form=form, btn_name="Login!")
 
-@app.route("/users", methods=['GET', 'POST'])
-def getUsers():
-    users = repositories.get_users()
-    return render_template(
-        "users/list.html",
-        users=users,
-        count=len(users)
-    )
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
 
 
 @app.route("/users/<int:user_id>")
+@login_required
 def getUser(user_id: int):
     users = repositories.get_users()
 
@@ -169,6 +187,7 @@ def getUser(user_id: int):
 
 
 @app.route("/delUser/<int:user_id>")
+@login_required
 def delUser(user_id: int):
     users = repositories.get_users()
 
@@ -210,10 +229,12 @@ def delVideo(video_id: int):
 
 
 if __name__ == '__main__':
+    login_manager.init_app(app)
+    login_manager.unauthorized_handler(lambda : redirect("/login"))
     app.app_context().push()
     repositories.create_table()
     repositories.create_table_for_video()
 
-    # generate_users(10)
+    #generate_users(1)
     app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
     app.run(debug=True, port=8080)
