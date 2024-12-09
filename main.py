@@ -1,7 +1,10 @@
 import os
 from fileinput import filename
 from random import randint
-import static
+from typing import TextIO, IO
+from datetime import datetime
+from flask_wtf.file import FileField
+import Static
 from flask import Flask, render_template, redirect, request, Response
 from flask_login import LoginManager, login_required, login_user, logout_user
 import repositories
@@ -57,12 +60,6 @@ def save_video(name, file):
     video = Video(None, name, file)
     file.save(name)
 
-def generate_video(filename):  # Чтение видеофайла поблочно
-    with open(f"static/{filename}", "rb") as video:
-        chunk = video.read(1024)
-        while chunk:
-            yield chunk
-            chunk = video.read(1024)
 
 @app.route('/video-layout/<filename>')
 def video_feed(filename):  # Трансляция видео
@@ -120,9 +117,6 @@ def Add_Video():
     if form.validate_on_submit():
         name = form.name.data
         file = form.file.data
-
-        from datetime import datetime
-
         filename = (str(datetime.now())
                     .replace(" ", "_")
                     .replace(".", ":")
@@ -131,9 +125,14 @@ def Add_Video():
         file.save(f"static/{filename}")
         add_video(Video(name=name, user_id=0, id=None, filename=filename))
         return redirect("/")
-
     return render_template("formTemplate.html", form=form, btn_name="Save video!")
 
+def generate_video(filename):  # Чтение видеофайла поблочно
+    with open(f"Static/{filename}", "rb") as video:
+        chunk = video.read(1024)
+        while chunk:
+            yield chunk
+            chunk = video.read(1024)
 
 @app.route("/videos", methods=['GET', 'POST'])
 def getVideos():

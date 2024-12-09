@@ -33,8 +33,10 @@ def get_users():
 
 def get_user(user_id: int):
     db = database.get_db()
-    row = db.execute("SELECT * FROM Users WHERE id = ?", (user_id,)).fetchone()
-    return models.User(*row)
+    row: any = db.execute("SELECT * FROM Users WHERE id = ?", (user_id,)).fetchone()
+    if row:
+        return models.User(*row)
+    return None
 
 
 def delete_user(user: models.User):
