@@ -4,7 +4,7 @@ from random import randint
 from typing import TextIO, IO
 from datetime import datetime
 from flask_wtf.file import FileField
-import Static
+import static
 from flask import Flask, render_template, redirect, request, Response
 from flask_login import LoginManager, login_required, login_user, logout_user
 import repositories
