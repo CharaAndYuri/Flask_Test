@@ -77,7 +77,7 @@ def index():
         links=[
             Link("Home", "/"),
             Link("Videos", "/videos"),
-            Link("Add User", "/add"),
+            Link("Log out", "/login"),
             Link("Add Video", "/addVideo")
         ],
         users=users
@@ -176,8 +176,8 @@ def getUser(user_id: int):
                 "layout/user-layout.html",
                 links=[
                     Link("Home", "/"),
-                    Link("Add User", "/add"),
-                    Link("Delete User", f"/delUser/{user.id}", class_name="bg-danger"),
+                    Link("Log out", "/add"),
+                  #  Link("Delete User", f"/delUser/{user.id}", class_name="bg-danger"),
                 ],
                 user=user
             )
@@ -208,7 +208,7 @@ def getVideo(video_id: int):
                 links=[
                     Link("Home", "/"),
                     Link("Add Video", "/addVideo"),
-                    Link("Delete User", f"/delVideo/{video.id}", class_name="bg-danger"),
+                  #  Link("Delete Video", f"/delVideo/{video.id}", class_name="bg-danger"),
                 ],
                 video=video
             )
